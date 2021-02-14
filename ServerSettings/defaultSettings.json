@@ -1,0 +1,10 @@
+{
+    "commandChannel":"",
+    "maxUserSongs":-1,
+    "maxQueueSize":-1,
+    "usersNeededToSkip":0,
+    "autoPlay":false,
+    "autoRemoveBotMessages":false,
+    "autoRemoveUserCommands":false,
+    "noRoles":true
+}

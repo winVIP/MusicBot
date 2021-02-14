@@ -1,0 +1,20 @@
+{
+    "commandChannel":"channelID",
+    "maxUserSongs":1,
+    "maxQueueSize":1,
+    "usersNeededToSkip":50,
+    "autoPlay":true,
+    "autoRemoveBotMessages":true,
+    "autoRemoveUserCommands":true,
+    "noRoles":true,
+    "roles":[
+        {"roleName":"DJ", "assignedUsers":["userID", "userID2"], 
+            "Permissions":{
+                "forceSkip":true,
+                "clearQueue":true,
+                "noMaxUserSongs":true,
+                "moveSong":true,
+                "skipTo":true
+            }}
+    ]
+}
