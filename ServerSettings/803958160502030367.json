@@ -2,7 +2,7 @@
     "commandChannel":"",
     "maxUserSongs":3,
     "maxQueueSize":-1,
-    "usersNeededToSkip":0,
+    "usersNeededToSkip":60,
     "autoPlay":false,
     "autoRemoveBotMessages":false,
     "autoRemoveUserCommands":false,

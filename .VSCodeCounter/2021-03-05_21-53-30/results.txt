@@ -1,0 +1,52 @@
+Date : 2021-03-05 21:53:30
+Directory : c:\Users\vyten\Desktop\MusicBot
+Total : 21 files,  3815 codes, 3 comments, 107 blanks, all 3925 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| JSON       |          6 |      3,250 |          0 |          2 |      3,252 |
+| JavaScript |         11 |        474 |          3 |         79 |        556 |
+| Markdown   |          4 |         91 |          0 |         26 |        117 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++-------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                          | files      | code       | comment    | blank      | total      |
++-------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                             |         21 |      3,815 |          3 |        107 |      3,925 |
+| .VSCodeCounter                                                                |          4 |         91 |          0 |         26 |        117 |
+| .VSCodeCounter\2021-02-20_13-25-23                                            |          2 |         43 |          0 |         13 |         56 |
+| .VSCodeCounter\2021-02-21_13-07-36                                            |          2 |         48 |          0 |         13 |         61 |
+| Commands                                                                      |          8 |        201 |          0 |         35 |        236 |
+| ServerSettings                                                                |          3 |         40 |          0 |          0 |         40 |
++-------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++-------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                                      | language   | code       | comment    | blank      | total      |
++-------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| c:\Users\vyten\Desktop\MusicBot\.VSCodeCounter\2021-02-20_13-25-23\details.md | Markdown   |         26 |          0 |          6 |         32 |
+| c:\Users\vyten\Desktop\MusicBot\.VSCodeCounter\2021-02-20_13-25-23\results.md | Markdown   |         17 |          0 |          7 |         24 |
+| c:\Users\vyten\Desktop\MusicBot\.VSCodeCounter\2021-02-21_13-07-36\details.md | Markdown   |         28 |          0 |          6 |         34 |
+| c:\Users\vyten\Desktop\MusicBot\.VSCodeCounter\2021-02-21_13-07-36\results.md | Markdown   |         20 |          0 |          7 |         27 |
+| c:\Users\vyten\Desktop\MusicBot\Commands\clear.js                             | JavaScript |         17 |          0 |          5 |         22 |
+| c:\Users\vyten\Desktop\MusicBot\Commands\execute.js                           | JavaScript |         66 |          0 |         10 |         76 |
+| c:\Users\vyten\Desktop\MusicBot\Commands\forceSkip.js                         | JavaScript |         12 |          0 |          1 |         13 |
+| c:\Users\vyten\Desktop\MusicBot\Commands\play.js                              | JavaScript |         32 |          0 |          3 |         35 |
+| c:\Users\vyten\Desktop\MusicBot\Commands\queueList.js                         | JavaScript |         20 |          0 |          5 |         25 |
+| c:\Users\vyten\Desktop\MusicBot\Commands\settings.js                          | JavaScript |         12 |          0 |          1 |         13 |
+| c:\Users\vyten\Desktop\MusicBot\Commands\skip.js                              | JavaScript |         29 |          0 |          7 |         36 |
+| c:\Users\vyten\Desktop\MusicBot\Commands\stop.js                              | JavaScript |         13 |          0 |          3 |         16 |
+| c:\Users\vyten\Desktop\MusicBot\ServerSettings\803958160502030367.json        | JSON       |         10 |          0 |          0 |         10 |
+| c:\Users\vyten\Desktop\MusicBot\ServerSettings\defaultSettings.json           | JSON       |         10 |          0 |          0 |         10 |
+| c:\Users\vyten\Desktop\MusicBot\ServerSettings\exampleSettings.json           | JSON       |         20 |          0 |          0 |         20 |
+| c:\Users\vyten\Desktop\MusicBot\config.json                                   | JSON       |          4 |          0 |          0 |          4 |
+| c:\Users\vyten\Desktop\MusicBot\index.js                                      | JavaScript |         75 |          2 |         17 |         94 |
+| c:\Users\vyten\Desktop\MusicBot\package-lock.json                             | JSON       |      3,186 |          0 |          1 |      3,187 |
+| c:\Users\vyten\Desktop\MusicBot\package.json                                  | JSON       |         20 |          0 |          1 |         21 |
+| c:\Users\vyten\Desktop\MusicBot\queue.js                                      | JavaScript |        151 |          1 |         20 |        172 |
+| c:\Users\vyten\Desktop\MusicBot\userQueue.js                                  | JavaScript |         47 |          0 |          7 |         54 |
+| Total                                                                         |            |      3,815 |          3 |        107 |      3,925 |
++-------------------------------------------------------------------------------+------------+------------+------------+------------+------------+

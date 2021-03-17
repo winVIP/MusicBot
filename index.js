@@ -6,6 +6,9 @@ const { skip } = require("./Commands/skip.js");
 const { stop } = require("./Commands/stop.js");
 const { forceSkip } = require("./Commands/forceSkip.js");
 const { settings } = require("./Commands/settings.js");
+const { queueList } = require("./Commands/queueList.js");
+const { clear } = require("./Commands/clear.js");
+
 
 const client = new Discord.Client();
 
@@ -29,26 +32,36 @@ client.on("message", async message => {
   if (message.author.bot) return;
   if (!message.content.startsWith(prefix)) return;
 
-  const serverQueue = queue.get(message.guild.id);
-
   if (message.content.startsWith(`${prefix}play`)) {
-    //nes async
-    execute(message, serverQueue);
+    execute(message);
     return;
-  } else if (message.content.startsWith(`${prefix}skip`)) {
-    skip(message, serverQueue);
+  } 
+  else if (message.content.startsWith(`${prefix}skip`)) {
+    skip(message);
     return;
-  } else if (message.content.startsWith(`${prefix}stop`)) {
-    stop(message, serverQueue);
+  } 
+  else if (message.content.startsWith(`${prefix}stop`)) {
+    stop(message);
     return;
-  } else if (message.content.startsWith(`${prefix}fs`)) {
-    forceSkip(message, serverQueue);
+  } 
+  else if (message.content.startsWith(`${prefix}fs`)) {
+    forceSkip(message);
     return;
-  } else if (message.content.startsWith(`${prefix}settings`)) {
+  } 
+  else if (message.content.startsWith(`${prefix}settings`)) {
     settings(message);
+    return;
+  } 
+  else if (message.content.startsWith(`${prefix}queue`)) {
+    queueList(message);
+    return;
+  }
+  else if (message.content.startsWith(`${prefix}clear`)) {
+    clear(message);
     return;
   } else {
     message.channel.send("You need to enter a valid command!");
+    return;
   }
 });
 
