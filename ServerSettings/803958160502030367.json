@@ -1,10 +1,23 @@
 {
-    "commandChannel":"",
-    "maxUserSongs":3,
-    "maxQueueSize":-1,
-    "usersNeededToSkip":60,
-    "autoPlay":false,
-    "autoRemoveBotMessages":false,
-    "autoRemoveUserCommands":false,
-    "noRoles":true
+    "commandChannel": "803958160939286589",
+    "maxUserSongs": 4,
+    "maxQueueSize": 100,
+    "usersNeededToSkip": -1,
+    "autoPlay": false,
+    "autoRemoveBotMessages": false,
+    "autoRemoveUserCommands": false,
+    "noRoles": false,
+    "roles": [
+        {
+            "roleID": "820708062490132480",
+            "Permissions": {
+                "forceSkip": true,
+                "clearQueue": true,
+                "maxUserSongs": true,
+                "skipTo": true,
+                "stop": true,
+                "addPlaylist": true
+            }
+        }
+    ]
 }

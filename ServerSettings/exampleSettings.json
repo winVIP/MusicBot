@@ -12,9 +12,10 @@
             "Permissions":{
                 "forceSkip":true,
                 "clearQueue":true,
-                "noMaxUserSongs":true,
                 "moveSong":true,
-                "skipTo":true
+                "skipTo":true,
+                "stop":true,
+                "addPlaylist":true
             }}
     ]
 }

@@ -7,7 +7,7 @@ const Discord = require("discord.js");
  * @param {Discord.Message} message 
  * @returns 
  */
-async function play(message) {
+async function play(message, ignoreMaxUserSongs) {
     const songToPlay = await queue.getSongToPlay(message.guild.id);
     //console.log(songToPlay);
     if(songToPlay == "The queue is empty"){
@@ -22,13 +22,11 @@ async function play(message) {
     //console.log(ytdl(songToPlay.url));
     const dispatcher = serverConnection.play(ytdl(songToPlay.url))
     .on("finish", async () => {
-        console.log("Ended");
-        console.log(await queue.removeSong(1, message.guild.id));
+        await queue.removeSong(1, message.guild.id);
         play(message);
     })
     .on("error", error => console.log("Is play:" + error));
     dispatcher.setVolumeLogarithmic(1);
-    //console.log(dispatcher);
 
     const userSongsCount = await queue.getUserSongCount(message.guild.id, message.member.id);
     const serverSongCount = await queue.getServerSongCount(message.guild.id);
@@ -40,10 +38,10 @@ async function play(message) {
     const songTitle = songToPlay.title;
 
     let songAddedToQueueMessage = `Song added to queue:\n**${songTitle}**\n`;
-    if(maxUserSongs != -1){
+    if(maxUserSongs > 0 && ignoreMaxUserSongs == false){
         songAddedToQueueMessage = songAddedToQueueMessage + `You have added **${userSongsCount}/${maxUserSongs}**\n`;
     }
-    if(maxServerSongs != -1){
+    if(maxServerSongs > 0){
         songAddedToQueueMessage = songAddedToQueueMessage + `Server queue **${serverSongCount}/${maxServerSongs}**`;
     }
     message.channel.send(songAddedToQueueMessage);

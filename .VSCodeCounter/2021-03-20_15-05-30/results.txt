@@ -1,0 +1,44 @@
+Date : 2021-03-20 15:05:30
+Directory : c:\Users\vyten\Desktop\Bakalaurinis\MusicBot
+Total : 17 files,  4018 codes, 128 comments, 104 blanks, all 4250 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| JSON       |          5 |      3,249 |          0 |          2 |      3,251 |
+| JavaScript |         12 |        769 |        128 |        102 |        999 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++-------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                | files      | code       | comment    | blank      | total      |
++-------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                   |         17 |      4,018 |        128 |        104 |      4,250 |
+| Commands                                                                            |          9 |        441 |        106 |         60 |        607 |
+| ServerSettings                                                                      |          3 |         40 |          0 |          0 |         40 |
++-------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++-------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                                            | language   | code       | comment    | blank      | total      |
++-------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| c:\Users\vyten\Desktop\Bakalaurinis\MusicBot\Commands\clear.js                      | JavaScript |         15 |          5 |          4 |         24 |
+| c:\Users\vyten\Desktop\Bakalaurinis\MusicBot\Commands\execute.js                    | JavaScript |         54 |          5 |          9 |         68 |
+| c:\Users\vyten\Desktop\Bakalaurinis\MusicBot\Commands\forceSkip.js                  | JavaScript |         17 |          5 |          4 |         26 |
+| c:\Users\vyten\Desktop\Bakalaurinis\MusicBot\Commands\help.js                       | JavaScript |         12 |          5 |          2 |         19 |
+| c:\Users\vyten\Desktop\Bakalaurinis\MusicBot\Commands\play.js                       | JavaScript |         39 |         35 |          8 |         82 |
+| c:\Users\vyten\Desktop\Bakalaurinis\MusicBot\Commands\queueList.js                  | JavaScript |         15 |          5 |          4 |         24 |
+| c:\Users\vyten\Desktop\Bakalaurinis\MusicBot\Commands\settings.js                   | JavaScript |        238 |         36 |         21 |        295 |
+| c:\Users\vyten\Desktop\Bakalaurinis\MusicBot\Commands\skip.js                       | JavaScript |         37 |          5 |          6 |         48 |
+| c:\Users\vyten\Desktop\Bakalaurinis\MusicBot\Commands\stop.js                       | JavaScript |         14 |          5 |          2 |         21 |
+| c:\Users\vyten\Desktop\Bakalaurinis\MusicBot\ServerSettings\803958160502030367.json | JSON       |         10 |          0 |          0 |         10 |
+| c:\Users\vyten\Desktop\Bakalaurinis\MusicBot\ServerSettings\defaultSettings.json    | JSON       |         10 |          0 |          0 |         10 |
+| c:\Users\vyten\Desktop\Bakalaurinis\MusicBot\ServerSettings\exampleSettings.json    | JSON       |         20 |          0 |          0 |         20 |
+| c:\Users\vyten\Desktop\Bakalaurinis\MusicBot\index.js                               | JavaScript |         81 |          2 |         15 |         98 |
+| c:\Users\vyten\Desktop\Bakalaurinis\MusicBot\package-lock.json                      | JSON       |      3,189 |          0 |          1 |      3,190 |
+| c:\Users\vyten\Desktop\Bakalaurinis\MusicBot\package.json                           | JSON       |         20 |          0 |          1 |         21 |
+| c:\Users\vyten\Desktop\Bakalaurinis\MusicBot\queue.js                               | JavaScript |        200 |         20 |         20 |        240 |
+| c:\Users\vyten\Desktop\Bakalaurinis\MusicBot\userQueue.js                           | JavaScript |         47 |          0 |          7 |         54 |
+| Total                                                                               |            |      4,018 |        128 |        104 |      4,250 |
++-------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+

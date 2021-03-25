@@ -1,4 +1,3 @@
-const ytdl = require("ytdl-core");
 const { play } = require("./play.js");
 const queue = require("./../queue.js");
 const Discord = require("discord.js");
@@ -8,7 +7,7 @@ const Discord = require("discord.js");
  * @param {Discord.Message} message 
  * @returns 
  */
-async function execute(message) {
+async function execute(message, ignoreMaxUserSongs) {
     const args = message.content.split(" ");
   
     const voiceChannel = message.member.voice.channel;
@@ -29,7 +28,7 @@ async function execute(message) {
       try {
         var connection = await voiceChannel.join();
         const connectionResult = await queue.addConnection(message.guild.id, connection);
-        play(message);
+        play(message, ignoreMaxUserSongs);
         return;
       } 
       catch (err) {
@@ -40,7 +39,7 @@ async function execute(message) {
       }
     } 
     else {
-      const addResult = await queue.addSong(message.channel, voiceChannel, args[1], message.guild.id, message.member.id);
+      const addResult = await queue.addSong(message.channel, voiceChannel, args[1], message.guild.id, message.member.id, ignoreMaxUserSongs);
       if(addResult == "Queue is full"){
         message.channel.send("Queue is full");
         return;
@@ -58,7 +57,15 @@ async function execute(message) {
 
       const songTitle = addResult.title;
 
-      message.channel.send(`**${songTitle}** has been added to the queue!\nYou have added **${userSongsCount}/${maxUserSongs}**\nServer queue **${serverSongCount}/${maxServerSongs}**`);
+      let songAddedToQueueMessage = `**${songTitle}** has been added to the queue!`;
+      if(maxUserSongs > 0 && ignoreMaxUserSongs == false){
+        songAddedToQueueMessage = songAddedToQueueMessage + `\nYou have added **${userSongsCount}/${maxUserSongs}**`;
+      }
+      if(maxServerSongs > 0){
+        songAddedToQueueMessage = songAddedToQueueMessage + `\nServer queue **${serverSongCount}/${maxServerSongs}**`;
+      }
+
+      message.channel.send(songAddedToQueueMessage);
       return;
     }
 }

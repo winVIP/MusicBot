@@ -1,0 +1,7 @@
+**{prefix}play** [Song query/Song link/Playlist link] - Plays the song(s) from the given name or url
+**{prefix}skip** - Skips the song that is playing or if vote skip is enables, votes to skip
+**{prefix}stop** - Stops what is playing and disconnects the bot
+**{prefix}queue** - Shows the queue
+**{prefix}clear** - Clears the queue
+**{prefix}settings** - Opens the settings help menu
+**{prefix}fs** - Skips the song that is playing, even if vote skip is enabled

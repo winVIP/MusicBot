@@ -1,7 +1,8 @@
 var queue = new Map();
 const ytdl = require("ytdl-core");
+const ytpl = require("ytpl");
 
-async function addSong(textChannel, voiceChannel, song, guildID, userID){
+async function addSong(textChannel, voiceChannel, song, guildID, userID, ignoreMaxUserSongs){
     if(queue.has(guildID) == false){
         const queueContruct = {
             textChannel: textChannel,
@@ -34,7 +35,7 @@ async function addSong(textChannel, voiceChannel, song, guildID, userID){
         if(queueContruct.songs.length >= guildConfig["maxQueueSize"] && guildConfig["maxQueueSize"] != -1){
             return "Queue is full";
         }
-        else if(userSongCount >= guildConfig["maxUserSongs"] && guildConfig["maxUserSongs"] != -1){
+        else if(userSongCount >= guildConfig["maxUserSongs"] && guildConfig["maxUserSongs"] != -1 && ignoreMaxUserSongs == false){
             return "You have reached the maximum amount of song that a user can add to the queue";
         }
         else{
@@ -67,8 +68,7 @@ async function removeSong(songIndex, guildID){
     else{
         let queueContruct = queue.get(guildID);
         const removedSong = queueContruct.songs[songIndex - 1].title;
-        queueContruct.songs.splice(songIndex - 1, songIndex - 1 + 1);
-        console.log(queueContruct.songs);
+        queueContruct.songs.splice(songIndex - 1, 1);
 
         if(queueContruct.songs.length == 0){
             queue.delete(guildID);
@@ -88,17 +88,18 @@ async function getUserSongCount(guildID, userID){
 }
 
 async function getServerSongCount(guildID){
+    if(queue.get(guildID) == undefined){
+        return 0;
+    }
     const queueContruct = queue.get(guildID);
     return queueContruct.songs.length;
 }
 
 async function getSongList(guildID){
     if(queue.has(guildID) == false){
-        console.log("iejom");
         return "The queue is empty";
     }
     else{
-        console.log("iejom1");
         const queueContruct = queue.get(guildID);
         const songs = queueContruct.songs;
         let songTitleList = "";
@@ -110,7 +111,6 @@ async function getSongList(guildID){
                 songTitleList = songTitleList + (i + 1) + ". " + songs[i].title + "\n";
             }
         }
-        console.log(songTitleList);
         return songTitleList
     }
 }

@@ -6,5 +6,6 @@
     "autoPlay":false,
     "autoRemoveBotMessages":false,
     "autoRemoveUserCommands":false,
-    "noRoles":true
+    "noRoles":false,
+    "roles":[]
 }
