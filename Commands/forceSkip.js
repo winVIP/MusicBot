@@ -8,7 +8,7 @@ const Discord = require("discord.js");
  */
 async function forceSkip(message) {
     if (!message.member.voice.channel){
-      message.channel.send("You have to be in a voice channel to stop the music!");
+      message.channel.send("You have to be in a voice channel to skip");
       return;
     }
     

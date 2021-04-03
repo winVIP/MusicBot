@@ -276,10 +276,10 @@ function setRole(message){
   }
   roleID = roleID.id;
 
-  const permissionList = ["forceSkip", "clearQueue", "maxUserSongs", "skipTo", "stop", "addPlaylist"];
+  const permissionList = ["forceSkip", "clearQueue", "ignoreMaxUserSongs", "skipTo", "stop", "addPlaylist"];
   if(permissionList.includes(permission) == false){
     message.channel.send("A permission by this name doesn't exist\nAvailable permissions:\n" +
-    "forceSkip, clearQueue, maxUserSongs, skipTo, stop, addPlaylist");
+    "forceSkip, clearQueue, ignoreMaxUserSongs, skipTo, stop, addPlaylist");
     return;
   }
 
@@ -302,7 +302,7 @@ function setRole(message){
       Permissions: {
         "forceSkip":false,
         "clearQueue":false,
-        "maxUserSongs":false,
+        "ignoreMaxUserSongs":false,
         "skipTo":false,
         "stop":false,
         "addPlaylist":false

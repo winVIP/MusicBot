@@ -2,9 +2,19 @@ var queue = new Map();
 const ytdl = require("ytdl-core");
 const ytpl = require("ytpl");
 
+var lastSongPlayed = new Map();
+
 async function addSong(textChannel, voiceChannel, song, guildID, userID, ignoreMaxUserSongs){
+    const isPlaylist = ytpl.validateID(song);
+    let ytplResult;
+    if(isPlaylist == true){
+        ytplResult = await ytpl(song, {limit:Infinity});
+        ytplResult = ytplResult.items;
+    }
+
+
     if(queue.has(guildID) == false){
-        const queueContruct = {
+        const queueConstruct = {
             textChannel: textChannel,
             voiceChannel: voiceChannel,
             connection: null,
@@ -13,26 +23,97 @@ async function addSong(textChannel, voiceChannel, song, guildID, userID, ignoreM
             playing: true
         };
 
-        const songInfo = await ytdl.getInfo(song);
-        const songConstruct = {
-            title: songInfo.videoDetails.title,
-            url: songInfo.videoDetails.video_url,
-            skipCount: 0,
-            user: userID
-        };
+        const guildConfig = require("./ServerSettings/" + guildID + ".json");
+        if(isPlaylist == true){
+            const userSongCount = queueConstruct.songs.filter(x => x.user == userID).length;
+            if(queueConstruct.songs.length + ytplResult.length > guildConfig["maxQueueSize"] && guildConfig["maxQueueSize"] != -1){
+                const slotsLeft = guildConfig["maxQueueSize"] - queueConstruct.songs.length;
+                if(slotsLeft == 0){
+                    return "Queue is full";
+                }
+                else{
+                    return `You can't add that many songs, only ${slotsLeft} slots left in queue`;
+                }
+            }
+            else if(userSongCount + ytplResult.length > guildConfig["maxUserSongs"] && guildConfig["maxUserSongs"] != -1 && ignoreMaxUserSongs == false){
+                const slotsLeft = guildConfig["maxUserSongs"] - queueConstruct.songs.length;
+                if(slotsLeft == 0){
+                    return "Queue is full";
+                }
+                else{
+                    return `You can't add that many songs, only ${slotsLeft} slots left in user queue`;
+                }
+            }
+            for (let i = 0; i < ytplResult.length; i++) {
+                const songConstruct = {
+                    title: ytplResult[i].title,
+                    url: ytplResult[i].url,
+                    skipCount: 0,
+                    user: userID
+                };
 
-        queueContruct.songs.push(songConstruct);
+                queueConstruct.songs.push(songConstruct);                
+            }
+        }
+        else{
+            const songInfo = await ytdl.getInfo(song);
+            const songConstruct = {
+                title: songInfo.videoDetails.title,
+                url: songInfo.videoDetails.video_url,
+                skipCount: 0,
+                user: userID
+            };
 
-        queue.set(guildID, queueContruct);
-        //console.log(que)
-        return songConstruct;
+            queueConstruct.songs.push(songConstruct);
+        }
+
+        queue.set(guildID, queueConstruct);
+
+        return await getSongToPlay(guildID);
     }
     else{
         const guildConfig = require("./ServerSettings/" + guildID + ".json");
-        const queueContruct = queue.get(guildID);
-        const userSongCount = queueContruct.songs.filter(x => x.user == userID).length;
+        const queueConstruct = queue.get(guildID);
+        const userSongCount = queueConstruct.songs.filter(x => x.user == userID).length;
 
-        if(queueContruct.songs.length >= guildConfig["maxQueueSize"] && guildConfig["maxQueueSize"] != -1){
+        if(isPlaylist == true){
+            if(queueConstruct.songs.length + ytplResult.length > guildConfig["maxQueueSize"] && guildConfig["maxQueueSize"] != -1){
+                const slotsLeft = guildConfig["maxQueueSize"] - queueConstruct.songs.length;
+                if(slotsLeft == 0){
+                    return "Queue is full";
+                }
+                else{
+                    return `You can't add that many songs, only ${slotsLeft} slots left in queue`;
+                }
+            }
+            else if(userSongCount + ytplResult.length > guildConfig["maxUserSongs"] && guildConfig["maxUserSongs"] != -1 && ignoreMaxUserSongs == false){
+                const slotsLeft = guildConfig["maxUserSongs"] - queueConstruct.songs.length;
+                if(slotsLeft == 0){
+                    return "Queue is full";
+                }
+                else{
+                    return `You can't add that many songs, only ${slotsLeft} slots left in user queue`;
+                }
+            }
+            else{
+                for (let i = 0; i < ytplResult.length; i++) {
+                    const songConstruct = {
+                        title: ytplResult[i].title,
+                        url: ytplResult[i].url,
+                        skipCount: 0,
+                        user: userID
+                    };
+    
+                    queueConstruct.songs.push(songConstruct);                
+                }
+
+                queue.set(guildID, queueConstruct);
+
+                return await getSongToPlay(guildID);
+            }
+        }
+
+        if(queueConstruct.songs.length >= guildConfig["maxQueueSize"] && guildConfig["maxQueueSize"] != -1){
             return "Queue is full";
         }
         else if(userSongCount >= guildConfig["maxUserSongs"] && guildConfig["maxUserSongs"] != -1 && ignoreMaxUserSongs == false){
@@ -47,9 +128,10 @@ async function addSong(textChannel, voiceChannel, song, guildID, userID, ignoreM
                 user: userID
             };
 
-            queueContruct.songs.push(songConstruct);
+            queueConstruct.songs.push(songConstruct);
 
-            queue.set(guildID, queueContruct);
+            queue.set(guildID, queueConstruct);
+
             return songConstruct;
         }
     }
@@ -71,7 +153,7 @@ async function removeSong(songIndex, guildID){
         queueContruct.songs.splice(songIndex - 1, 1);
 
         if(queueContruct.songs.length == 0){
-            queue.delete(guildID);
+            queue.set(guildID, queueContruct);
             return "The queue is now empty"
         }
         else{
@@ -116,17 +198,19 @@ async function getSongList(guildID){
 }
 
 async function clearQueue(guildID){
+    let queueContruct = queue.get(guildID);
+    queueContruct.songs = [];
     if(queue.has(guildID) == false){
         return "The queue is empty"
     }
     else{
-        queue.delete(guildID);
+        queue.set(guildID, queueContruct);
         return "The queue is now empty"
     }
 }
 
 async function getSongToPlay(guildID){
-    if(queue.has(guildID) == false){
+    if(queue.get(guildID).songs.length == 0){
         return "The queue is empty";
     }
     else{
@@ -205,6 +289,43 @@ async function voteSkip(guildID, memberID, usersInChannel){
     }    
 }
 
+async function shuffle(guildID){
+    let queueConstruct = queue.get(guildID)
+    let songArray = queueConstruct.songs.slice(1, queueConstruct.songs.length);
+    console.log(songArray)
+
+    let currentIndex = songArray.length, temporaryValue, randomIndex;
+
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+
+        // And swap it with the current element.
+        temporaryValue = songArray[currentIndex];
+        songArray[currentIndex] = songArray[randomIndex];
+        songArray[randomIndex] = temporaryValue;
+    }
+
+    songArray.unshift(queueConstruct.songs[0]);
+
+    queueConstruct.songs = songArray;
+    queue.set(guildID, queueConstruct);
+
+    return;
+}
+
+async function getLastSongPlayed(guildID){
+    return lastSongPlayed.get(guildID)
+}
+
+async function setLastSongPlayed(guildID, songConstruct){
+    lastSongPlayed.set(guildID, songConstruct);
+    return;
+}
+
 /* const method = async () => {
     const a1 = await addSong("sadasd", "dsadasda", "https://www.youtube.com/watch?v=YrcyW38bUVI", "803958160502030367", "dasdsad");
     const a2 = await addSong("sadasd", "dsadasda", "https://www.youtube.com/watch?v=YrcyW38bUVI", "803958160502030367", "dasdsad");
@@ -236,5 +357,8 @@ module.exports = {
     isEmpty,
     addConnection,
     getConnection,
-    voteSkip
+    voteSkip,
+    shuffle,
+    getLastSongPlayed,
+    setLastSongPlayed
 }

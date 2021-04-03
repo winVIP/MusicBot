@@ -1,9 +1,9 @@
 {
-    "commandChannel": "803958160939286589",
-    "maxUserSongs": 4,
-    "maxQueueSize": 100,
+    "commandChannel": "803958160939286588",
+    "maxUserSongs": -1,
+    "maxQueueSize": -1,
     "usersNeededToSkip": -1,
-    "autoPlay": false,
+    "autoPlay": true,
     "autoRemoveBotMessages": false,
     "autoRemoveUserCommands": false,
     "noRoles": false,
@@ -13,7 +13,7 @@
             "Permissions": {
                 "forceSkip": true,
                 "clearQueue": true,
-                "maxUserSongs": true,
+                "ignoreMaxUserSongs": false,
                 "skipTo": true,
                 "stop": true,
                 "addPlaylist": true

@@ -8,71 +8,52 @@ const Discord = require("discord.js");
  * @returns 
  */
 async function play(message, ignoreMaxUserSongs) {
-    const songToPlay = await queue.getSongToPlay(message.guild.id);
-    //console.log(songToPlay);
+    let songToPlay = await queue.getSongToPlay(message.guild.id);
+    const serverSettings = require("../ServerSettings/" + message.guild.id + ".json");
+    const autoPlay = Boolean(serverSettings.autoPlay);
     if(songToPlay == "The queue is empty"){
-        message.channel.send("The queue is empty, leaving channel");
-        queue.clearQueue(message.guild.id);
-        message.member.voice.channel.leave();
-        return;
+        if(autoPlay == true){
+            const membersInVoiceChannel = message.member.voice.channel.members.size;
+            if(membersInVoiceChannel > 0){
+                console.log("Cia")
+                const lastSongPlayed = await queue.getLastSongPlayed(message.guild.id);
+                console.log(lastSongPlayed)
+                const songInfo = await ytdl.getBasicInfo(lastSongPlayed.url);
+                const relatedSongs = songInfo.related_videos;
+
+                function getRandomInt(max) {
+                    return Math.floor(Math.random() * max);
+                }
+
+                const relatedSongInfo = await ytdl.getBasicInfo(relatedSongs[getRandomInt(relatedSongs.length - 1)].id);
+
+                const voiceChannel = message.member.voice.channel;
+                await queue.addSong(message.channel, voiceChannel, relatedSongInfo.videoDetails.video_url, message.guild.id, "autoPlay", true);
+                songToPlay = await queue.getSongToPlay(message.guild.id);
+            }
+        }
+        else{
+            message.channel.send("The queue is empty, leaving channel");
+            queue.clearQueue(message.guild.id);
+            message.member.voice.channel.leave();
+            return;
+        }
     }
     const serverConnection = await queue.getConnection(message.guild.id);
-    //console.log(serverConnection);
-    //console.log(typeof songToPlay.url);
-    //console.log(ytdl(songToPlay.url));
-    const dispatcher = serverConnection.play(ytdl(songToPlay.url))
+    console.log(songToPlay)
+    queue.setLastSongPlayed(message.guild.id, songToPlay);
+    const dispatcher = serverConnection.play(ytdl(songToPlay.url, { filter: 'audioonly' }))
     .on("finish", async () => {
         await queue.removeSong(1, message.guild.id);
-        play(message);
+        play(message, ignoreMaxUserSongs);
     })
     .on("error", error => console.log("Is play:" + error));
     dispatcher.setVolumeLogarithmic(1);
 
-    const userSongsCount = await queue.getUserSongCount(message.guild.id, message.member.id);
-    const serverSongCount = await queue.getServerSongCount(message.guild.id);
-
-    const serverSettings = require("../ServerSettings/" + message.guild.id + ".json");
-    const maxUserSongs = serverSettings["maxUserSongs"];
-    const maxServerSongs = serverSettings["maxQueueSize"];
-
     const songTitle = songToPlay.title;
 
-    let songAddedToQueueMessage = `Song added to queue:\n**${songTitle}**\n`;
-    if(maxUserSongs > 0 && ignoreMaxUserSongs == false){
-        songAddedToQueueMessage = songAddedToQueueMessage + `You have added **${userSongsCount}/${maxUserSongs}**\n`;
-    }
-    if(maxServerSongs > 0){
-        songAddedToQueueMessage = songAddedToQueueMessage + `Server queue **${serverSongCount}/${maxServerSongs}**`;
-    }
-    message.channel.send(songAddedToQueueMessage);
+    message.channel.send(`Started playing:\n**${songTitle}**\n`);
     return;
-
-
-    /* const serverQueue = queue.get(guild.id);
-    if (!song) {
-        serverQueue.voiceChannel.leave();
-        queue.remove(guild.id);
-        userQueue.deleteGuild(message.guild.id);
-        return;
-    }
-
-    const dispatcher = serverQueue.connection
-        .play(ytdl(song.url))
-        .on("finish", () => {
-        serverQueue.songs.shift();
-        userQueue.remove(message.guild.id, message.author.id);
-        play(guild, serverQueue.songs[0], message);
-        })
-        .on("error", error => console.error(error));
-    dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
-    console.log(message.guild.id);
-    const userSongsAdded = userQueue.get(message.guild.id, message.author.id);
-    const serverSettings = require("../ServerSettings/" + message.guild.id + ".json");
-    const maxUserSongs = serverSettings["maxUserSongs"];
-    const maxServerSongs = serverSettings["maxQueueSize"];
-    const serverSongsAdded = queue.queueSize(message.guild.id);
-    serverQueue.textChannel.send(`Started playing: **${song.title}** You have added **${userSongsAdded}/${maxUserSongs}** Server queue **${serverSongsAdded}/${maxServerSongs}**`);
-    return; */
 }
 
 module.exports = {
