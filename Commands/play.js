@@ -34,8 +34,8 @@ async function play(message, ignoreMaxUserSongs) {
         }
         else{
             message.channel.send("The queue is empty, leaving channel");
-            queue.clearQueue(message.guild.id);
             message.member.voice.channel.leave();
+            queue.destroyQueue(message.guild.id);
             return;
         }
     }

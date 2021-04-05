@@ -12,8 +12,8 @@ async function stop(message) {
       return;
     }
     const connection = await queue.getConnection(message.guild.id);
-    queue.clearQueue(message.guild.id);
-    connection.dispatcher.end();
+    connection.disconnect();
+    queue.destroyQueue(message.guild.id)
 }
 
 module.exports = {

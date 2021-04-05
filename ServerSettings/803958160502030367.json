@@ -3,7 +3,7 @@
     "maxUserSongs": -1,
     "maxQueueSize": -1,
     "usersNeededToSkip": -1,
-    "autoPlay": true,
+    "autoPlay": false,
     "autoRemoveBotMessages": false,
     "autoRemoveUserCommands": false,
     "noRoles": false,

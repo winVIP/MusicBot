@@ -1,6 +1,7 @@
 var queue = new Map();
 const ytdl = require("ytdl-core");
 const ytpl = require("ytpl");
+const ytsr = require("ytsr")
 
 var lastSongPlayed = new Map();
 
@@ -137,6 +138,158 @@ async function addSong(textChannel, voiceChannel, song, guildID, userID, ignoreM
     }
 }
 
+/**
+ * 
+ * @param {*} textChannel 
+ * @param {*} voiceChannel 
+ * @param {Array} songs 
+ * @param {*} guildID 
+ * @param {*} userID 
+ * @param {*} ignoreMaxUserSongs 
+ * @returns 
+ */
+async function addSpotifySongs(textChannel, voiceChannel, songs, guildID, userID, ignoreMaxUserSongs){
+    if(queue.has(guildID) == false){
+        const queueConstruct = {
+            textChannel: textChannel,
+            voiceChannel: voiceChannel,
+            connection: null,
+            songs: [],
+            volume: 5,
+            playing: true
+        };
+
+        const guildConfig = require("./ServerSettings/" + guildID + ".json");
+        if(songs.length > 1){
+            const userSongCount = queueConstruct.songs.filter(x => x.user == userID).length;
+            if(queueConstruct.songs.length + songs.length > guildConfig["maxQueueSize"] && guildConfig["maxQueueSize"] != -1){
+                const slotsLeft = guildConfig["maxQueueSize"] - queueConstruct.songs.length;
+                if(slotsLeft == 0){
+                    return "Queue is full";
+                }
+                else{
+                    return `You can't add that many songs, only ${slotsLeft} slots left in queue`;
+                }
+            }
+            else if(userSongCount + songs.length > guildConfig["maxUserSongs"] && guildConfig["maxUserSongs"] != -1 && ignoreMaxUserSongs == false){
+                const slotsLeft = guildConfig["maxUserSongs"] - queueConstruct.songs.length;
+                if(slotsLeft == 0){
+                    return "Queue is full";
+                }
+                else{
+                    return `You can't add that many songs, only ${slotsLeft} slots left in user queue`;
+                }
+            }
+            for (let i = 0; i < songs.length; i++) {
+                let songSearchQuery = "";
+                for (let j = 0; j < songs[i].artists.length; j++) {
+                    songSearchQuery = songSearchQuery + songs[i].artists[j]                    
+                }
+                songSearchQuery = songSearchQuery + songs[i].trackName;
+                const songSearchResult = await ytsr(songSearchQuery, {limit:1})
+                if(songSearchResult.items[0].type == "video"){
+                    const songConstruct = {
+                        title: songSearchResult.items[0].title,
+                        url: songSearchResult.items[0].url,
+                        skipCount: 0,
+                        user: userID
+                    };
+    
+                    queueConstruct.songs.push(songConstruct); 
+                }
+            }
+        }
+        else{
+            let songSearchQuery = "";
+            for (let j = 0; j < songs[0].artists.length; j++) {
+                songSearchQuery = songSearchQuery + songs[0].artists[j]                    
+            }
+            songSearchQuery = songSearchQuery + songs[0].trackName;
+            const songSearchResult = await ytsr(songSearchQuery, {limit:1})
+            if(songSearchResult.items[0].type == "video"){
+                const songConstruct = {
+                    title: songSearchResult.items[0].title,
+                    url: songSearchResult.items[0].url,
+                    skipCount: 0,
+                    user: userID
+                };
+
+                queueConstruct.songs.push(songConstruct); 
+            }
+        }
+
+        queue.set(guildID, queueConstruct);
+
+        return await getSongToPlay(guildID);
+    }
+    else{
+        const guildConfig = require("./ServerSettings/" + guildID + ".json");
+        const queueConstruct = queue.get(guildID);
+
+        if(songs.length > 1){
+            const userSongCount = queueConstruct.songs.filter(x => x.user == userID).length;
+            if(queueConstruct.songs.length + songs.length > guildConfig["maxQueueSize"] && guildConfig["maxQueueSize"] != -1){
+                const slotsLeft = guildConfig["maxQueueSize"] - queueConstruct.songs.length;
+                if(slotsLeft == 0){
+                    return "Queue is full";
+                }
+                else{
+                    return `You can't add that many songs, only ${slotsLeft} slots left in queue`;
+                }
+            }
+            else if(userSongCount + songs.length > guildConfig["maxUserSongs"] && guildConfig["maxUserSongs"] != -1 && ignoreMaxUserSongs == false){
+                const slotsLeft = guildConfig["maxUserSongs"] - queueConstruct.songs.length;
+                if(slotsLeft == 0){
+                    return "Queue is full";
+                }
+                else{
+                    return `You can't add that many songs, only ${slotsLeft} slots left in user queue`;
+                }
+            }
+            for (let i = 0; i < songs.length; i++) {
+                let songSearchQuery = "";
+                for (let j = 0; j < songs[i].artists.length; j++) {
+                    songSearchQuery = songSearchQuery + songs[i].artists[j]                    
+                }
+                songSearchQuery = songSearchQuery + songs[i].trackName;
+                const songSearchResult = await ytsr(songSearchQuery, {limit:1})
+                if(songSearchResult.items[0].type == "video"){
+                    const songConstruct = {
+                        title: songSearchResult.items[0].title,
+                        url: songSearchResult.items[0].url,
+                        skipCount: 0,
+                        user: userID
+                    };
+    
+                    queueConstruct.songs.push(songConstruct); 
+                }
+            }
+        }
+        else{
+            let songSearchQuery = "";
+            for (let j = 0; j < songs[i].artists.length; j++) {
+                songSearchQuery = songSearchQuery + songs[i].artists[j]                    
+            }
+            songSearchQuery = songSearchQuery + songs[i].trackName;
+            const songSearchResult = await ytsr(songSearchQuery, {limit:1})
+            if(songSearchResult.items[0].type == "video"){
+                const songConstruct = {
+                    title: songSearchResult.items[0].title,
+                    url: songSearchResult.items[0].url,
+                    skipCount: 0,
+                    user: userID
+                };
+
+                queueConstruct.songs.push(songConstruct); 
+            }
+        }
+
+        queue.set(guildID, queueConstruct);
+
+        return await getSongToPlay(guildID);
+    }
+}
+
 async function removeSong(songIndex, guildID){
     if(songIndex < 1){
         return "The provided index is less than 1";
@@ -199,7 +352,7 @@ async function getSongList(guildID){
 
 async function clearQueue(guildID){
     let queueContruct = queue.get(guildID);
-    queueContruct.songs = [];
+    queueContruct.songs = [queueContruct.songs[0]];
     if(queue.has(guildID) == false){
         return "The queue is empty"
     }
@@ -207,6 +360,10 @@ async function clearQueue(guildID){
         queue.set(guildID, queueContruct);
         return "The queue is now empty"
     }
+}
+
+async function destroyQueue(guildID){
+    return queue.delete(guildID);
 }
 
 async function getSongToPlay(guildID){
@@ -360,5 +517,7 @@ module.exports = {
     voteSkip,
     shuffle,
     getLastSongPlayed,
-    setLastSongPlayed
+    setLastSongPlayed,
+    addSpotifySongs,
+    destroyQueue
 }
