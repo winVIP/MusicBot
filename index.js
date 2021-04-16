@@ -1,6 +1,9 @@
 const Discord = require("discord.js");
+const fs = require("fs");
+const path = require("path")
 const { prefix, token } = require("./config.json");
 const queue = require("./queue.js");
+const dispatcherControls = require("./dispatcherControls")
 const { execute } = require("./Commands/execute.js");
 const { skip } = require("./Commands/skip.js");
 const { stop } = require("./Commands/stop.js");
@@ -12,6 +15,10 @@ const { help } = require("./Commands/help.js");
 const { skipTo } = require("./Commands/skipTo.js");
 const { Playlist } = require('./Commands/playlist')
 const { search } = require("./Commands/search")
+const { pause } = require("./Commands/pause")
+const { resume } = require("./Commands/resume")
+const soundcloud = require("./Commands/soundCloud")
+const { history } = require("./Commands/history")
 
 const client = new Discord.Client();
 
@@ -25,14 +32,31 @@ client.once("reconnecting", () => {
   console.log("Reconnecting!");
 });
 
-client.once("disconnect", () => {
-  console.log("Disconnect!");
+client.on("voiceStateUpdate", async (oldPresence, newPresence) => {
+  if(oldPresence.channel != undefined && newPresence.channel == undefined){
+    if(oldPresence.channel.members.filter(member => !member.user.bot).size == 0){
+      await setTimeout(async () => {
+        const connection = await queue.getConnection(oldPresence.guild.id);
+        if(typeof connection != "string"){
+          await connection.disconnect()
+        }
+      }, 1000 * 60, "botDisconnect")      
+    }    
+  }
+  if(newPresence.id == client.user.id){
+    if(newPresence.channel == undefined){
+      await queue.destroyQueue(oldPresence.guild.id)
+      await dispatcherControls.setDispatcher(undefined)
+    }
+  }
 });
 
-
-
 client.on("message", async message => {
-  const serverSettings = require("./ServerSettings/" + message.guild.id + ".json");
+  let serverSettings;
+  const fullPath = path.resolve("./ServerSettings")
+  if(fs.existsSync(fullPath + "\\" + message.guild.id + ".json") == true){
+    serverSettings = require(fullPath + "\\" + message.guild.id + ".json");
+  }
   if(message.author.bot){
     if(serverSettings.autoRemoveBotMessages == true){
       message.delete({timeout:2000});
@@ -49,7 +73,7 @@ client.on("message", async message => {
     }
   }
   
-  if(message.channel.id != serverSettings.commandChannel){
+  if(message.channel.id != serverSettings.commandChannel && serverSettings.commandChannel != ""){
     const commandChannelName = message.guild.channels.cache.find(ch => ch.id == serverSettings.commandChannel).name
     message.channel.send(`This channel can't be used for bot commands, use **${commandChannelName}**`);
     return;
@@ -76,6 +100,58 @@ client.on("message", async message => {
         }        
       }
       Playlist(message, result);
+    }
+  }
+  else if(message.content.startsWith(`${prefix}history`)){
+    const serverConfig = require("./ServerSettings/" + message.guild.id + ".json");
+    if(serverConfig.noRoles == true){
+      history(message);
+      return;
+    }
+    else{
+      const serverRoles = serverConfig.roles;
+      let memberRoleIds = Array.from(message.member.roles.cache.keys());
+      let result = false
+      for (let i = 0; i < memberRoleIds.length; i++) {
+        for (let j = 0; j < serverRoles.length; j++) {
+          if(memberRoleIds[i] == serverRoles[j].roleID){
+            if(serverRoles[j].Permissions.ignoreMaxUserSongs == true){
+              result = true;
+            }
+          }          
+        }        
+      }
+      history(message, result);
+    }
+  }
+  else if(message.content.startsWith(`${prefix}pause`)){
+    pause(message)
+    return
+  }
+  else if(message.content.startsWith(`${prefix}resume`)){
+    resume(message)
+    return
+  }
+  else if(message.content.startsWith(`${prefix}soundcloud`)){
+    const serverConfig = require("./ServerSettings/" + message.guild.id + ".json");
+    if(serverConfig.noRoles == true){
+      soundcloud.search(message);
+      return;
+    }
+    else{
+      const serverRoles = serverConfig.roles;
+      let memberRoleIds = Array.from(message.member.roles.cache.keys());
+      let result = false
+      for (let i = 0; i < memberRoleIds.length; i++) {
+        for (let j = 0; j < serverRoles.length; j++) {
+          if(memberRoleIds[i] == serverRoles[j].roleID){
+            if(serverRoles[j].Permissions.ignoreMaxUserSongs == true){
+              result = true;
+            }
+          }          
+        }        
+      }
+      soundcloud.search(message, result);
     }
   }
   else if (message.content.startsWith(`${prefix}play`)) {
@@ -236,28 +312,29 @@ client.on("message", async message => {
 });
 
 client.on("guildCreate", async guild => {
-  var fs = require("fs");
-  fs.copyFile("./ServerSettings/defaultSettings.json", "./ServerSettings/" + guild.id + ".json", (err) => {
-    if (err) throw err;
-    console.log('Server settings added');
-  });
+  console.log("Guild id: " +  guild.id)
+  try{
+    const fullPath = path.resolve("./ServerSettings")
+    fs.writeFileSync(fullPath + "\\" + guild.id + ".json", "")
+    console.log("baige")
+    fs.copyFileSync(fullPath + "\\" + "defaultSettings.json", fullPath + "\\" + guild.id + ".json")  
+  }
+  catch(e){
+    console.log(e)
+  }
 });
 
 client.on("guildDelete", async guild => {
-  var fs = require("fs");
-  fs.unlink("./ServerSettings/" + guild.id + ".json", (err) => {
-    if (err) throw err;
-    console.log('Server settings removed');
-  });
+  console.log("Guild id: " +  guild.id)
+  try{
+    const fullPath = path.resolve("./ServerSettings")
+    if(fs.existsSync(fullPath + "\\" + guild.id + ".json") == true){
+      fs.unlinkSync(fullPath + "\\" + guild.id + ".json");
+    } 
+  }
+  catch(e){
+    console.log(e)
+  }
 });
 
-client.on("test", console.log);
-
 client.login(token);
-
-const testGuild = {
-  name: "Test Guild",
-  id: "484894126195898"
-};
-
-//client.emit('guildCreate', testGuild);

@@ -1,6 +1,9 @@
 const ytdl = require("ytdl-core");
 const queue = require("./../queue.js");
 const Discord = require("discord.js");
+const scdl = require("soundcloud-downloader").default;
+const dispatcherControls = require("../dispatcherControls")
+const historyList = require("../history")
 
 /**
  * 
@@ -9,15 +12,17 @@ const Discord = require("discord.js");
  */
 async function play(message, ignoreMaxUserSongs) {
     let songToPlay = await queue.getSongToPlay(message.guild.id);
+    if(typeof songToPlay != "string" && songToPlay.platform == "soundcloud"){
+        playSoundCloud(message, ignoreMaxUserSongs)
+        return
+    }
     const serverSettings = require("../ServerSettings/" + message.guild.id + ".json");
     const autoPlay = Boolean(serverSettings.autoPlay);
     if(songToPlay == "The queue is empty"){
         if(autoPlay == true){
             const membersInVoiceChannel = message.member.voice.channel.members.size;
             if(membersInVoiceChannel > 0){
-                console.log("Cia")
-                const lastSongPlayed = await queue.getLastSongPlayed(message.guild.id);
-                console.log(lastSongPlayed)
+                const lastSongPlayed = await historyList.getSongForAutoplay(message);
                 const songInfo = await ytdl.getBasicInfo(lastSongPlayed.url);
                 const relatedSongs = songInfo.related_videos;
 
@@ -39,16 +44,43 @@ async function play(message, ignoreMaxUserSongs) {
             return;
         }
     }
+    try{
+        await historyList.add(message, songToPlay.url)
+    }
+    catch(e){
+        console.log(e)
+    }
     const serverConnection = await queue.getConnection(message.guild.id);
-    console.log(songToPlay)
-    queue.setLastSongPlayed(message.guild.id, songToPlay);
-    const dispatcher = serverConnection.play(ytdl(songToPlay.url, { filter: 'audioonly' }))
+    const dispatcher = serverConnection.play(ytdl(songToPlay.url, {filter:"audioonly"}))
     .on("finish", async () => {
         await queue.removeSong(1, message.guild.id);
+        await dispatcherControls.setDispatcher(undefined)
+        play(message, ignoreMaxUserSongs);
+    })
+    .on("error", error => console.log("Is play:" + error));
+    await dispatcher.setVolumeLogarithmic(1);
+    await dispatcherControls.setDispatcher(dispatcher)
+
+    const songTitle = songToPlay.title;
+
+    message.channel.send(`Started playing:\n**${songTitle}**\n`);
+    return;
+}
+
+async function playSoundCloud(message, ignoreMaxUserSongs){
+    let songToPlay = await queue.getSongToPlay(message.guild.id);
+
+    const serverConnection = await queue.getConnection(message.guild.id);
+    const dispatcher = serverConnection.play(await scdl.download(songToPlay.url))
+    .on("finish", async () => {
+        console.log("finish")
+        await queue.removeSong(1, message.guild.id);
+        await dispatcherControls.setDispatcher(undefined)
         play(message, ignoreMaxUserSongs);
     })
     .on("error", error => console.log("Is play:" + error));
     dispatcher.setVolumeLogarithmic(1);
+    await dispatcherControls.setDispatcher(dispatcher)
 
     const songTitle = songToPlay.title;
 

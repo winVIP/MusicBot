@@ -2,6 +2,7 @@ var queue = new Map();
 const ytdl = require("ytdl-core");
 const ytpl = require("ytpl");
 const ytsr = require("ytsr")
+const scdl = require("soundcloud-downloader").default;
 
 var lastSongPlayed = new Map();
 
@@ -50,7 +51,8 @@ async function addSong(textChannel, voiceChannel, song, guildID, userID, ignoreM
                     title: ytplResult[i].title,
                     url: ytplResult[i].url,
                     skipCount: 0,
-                    user: userID
+                    user: userID,
+                    platform: "youtube"
                 };
 
                 queueConstruct.songs.push(songConstruct);                
@@ -62,7 +64,8 @@ async function addSong(textChannel, voiceChannel, song, guildID, userID, ignoreM
                 title: songInfo.videoDetails.title,
                 url: songInfo.videoDetails.video_url,
                 skipCount: 0,
-                user: userID
+                user: userID,
+                platform: "youtube"
             };
 
             queueConstruct.songs.push(songConstruct);
@@ -102,7 +105,8 @@ async function addSong(textChannel, voiceChannel, song, guildID, userID, ignoreM
                         title: ytplResult[i].title,
                         url: ytplResult[i].url,
                         skipCount: 0,
-                        user: userID
+                        user: userID,
+                        platform: "youtube"
                     };
     
                     queueConstruct.songs.push(songConstruct);                
@@ -126,7 +130,8 @@ async function addSong(textChannel, voiceChannel, song, guildID, userID, ignoreM
                 title: songInfo.videoDetails.title,
                 url: songInfo.videoDetails.video_url,
                 skipCount: [],
-                user: userID
+                user: userID,
+                platform: "youtube"
             };
 
             queueConstruct.songs.push(songConstruct);
@@ -192,7 +197,8 @@ async function addSpotifySongs(textChannel, voiceChannel, songs, guildID, userID
                         title: songSearchResult.items[0].title,
                         url: songSearchResult.items[0].url,
                         skipCount: 0,
-                        user: userID
+                        user: userID,
+                        platform: "youtube"
                     };
     
                     queueConstruct.songs.push(songConstruct); 
@@ -211,7 +217,8 @@ async function addSpotifySongs(textChannel, voiceChannel, songs, guildID, userID
                     title: songSearchResult.items[0].title,
                     url: songSearchResult.items[0].url,
                     skipCount: 0,
-                    user: userID
+                    user: userID,
+                    platform: "youtube"
                 };
 
                 queueConstruct.songs.push(songConstruct); 
@@ -258,7 +265,8 @@ async function addSpotifySongs(textChannel, voiceChannel, songs, guildID, userID
                         title: songSearchResult.items[0].title,
                         url: songSearchResult.items[0].url,
                         skipCount: 0,
-                        user: userID
+                        user: userID,
+                        platform: "youtube"
                     };
     
                     queueConstruct.songs.push(songConstruct); 
@@ -277,11 +285,138 @@ async function addSpotifySongs(textChannel, voiceChannel, songs, guildID, userID
                     title: songSearchResult.items[0].title,
                     url: songSearchResult.items[0].url,
                     skipCount: 0,
-                    user: userID
+                    user: userID,
+                    platform: "youtube"
                 };
 
                 queueConstruct.songs.push(songConstruct); 
             }
+        }
+
+        queue.set(guildID, queueConstruct);
+
+        return await getSongToPlay(guildID);
+    }
+}
+
+/**
+ * 
+ * @param {*} textChannel 
+ * @param {*} voiceChannel 
+ * @param {import("soundcloud-downloader/src/info").TrackInfo[]} scURLs 
+ * @param {*} guildID 
+ * @param {*} userID 
+ * @param {*} ignoreMaxUserSongs 
+ * @returns 
+ */
+async function addSoundCloudSongs(textChannel, voiceChannel, scURLs, guildID, userID, ignoreMaxUserSongs){
+    if(queue.has(guildID) == false){
+        const queueConstruct = {
+            textChannel: textChannel,
+            voiceChannel: voiceChannel,
+            connection: null,
+            songs: [],
+            volume: 5,
+            playing: true
+        };
+
+        const guildConfig = require("./ServerSettings/" + guildID + ".json");
+        if(scURLs.length > 1){
+            const userSongCount = queueConstruct.songs.filter(x => x.user == userID).length;
+            if(queueConstruct.songs.length + scURLs.length > guildConfig["maxQueueSize"] && guildConfig["maxQueueSize"] != -1){
+                const slotsLeft = guildConfig["maxQueueSize"] - queueConstruct.songs.length;
+                if(slotsLeft == 0){
+                    return "Queue is full";
+                }
+                else{
+                    return `You can't add that many songs, only ${slotsLeft} slots left in queue`;
+                }
+            }
+            else if(userSongCount + scURLs.length > guildConfig["maxUserSongs"] && guildConfig["maxUserSongs"] != -1 && ignoreMaxUserSongs == false){
+                const slotsLeft = guildConfig["maxUserSongs"] - queueConstruct.songs.length;
+                if(slotsLeft == 0){
+                    return "Queue is full";
+                }
+                else{
+                    return `You can't add that many songs, only ${slotsLeft} slots left in user queue`;
+                }
+            }
+            for (let i = 0; i < scURLs.length; i++) {
+                const songConstruct = {
+                    title: scURLs[i].title,
+                    url: scURLs[i].permalink_url,
+                    skipCount: 0,
+                    user: userID,
+                    platform: "soundcloud"
+                };
+
+                queueConstruct.songs.push(songConstruct); 
+            }
+        }
+        else{
+            const songConstruct = {
+                title: scURLs[0].title,
+                url: scURLs[0].permalink_url,
+                skipCount: 0,
+                user: userID,
+                platform: "soundcloud"
+            };
+
+            queueConstruct.songs.push(songConstruct); 
+        }
+
+        queue.set(guildID, queueConstruct);
+
+        return await getSongToPlay(guildID);
+    }
+    else{
+        const guildConfig = require("./ServerSettings/" + guildID + ".json");
+        const queueConstruct = queue.get(guildID);
+
+        if(scURLs.length > 1){
+            const userSongCount = queueConstruct.songs.filter(x => x.user == userID).length;
+            if(queueConstruct.songs.length + songs.length > guildConfig["maxQueueSize"] && guildConfig["maxQueueSize"] != -1){
+                const slotsLeft = guildConfig["maxQueueSize"] - queueConstruct.songs.length;
+                if(slotsLeft == 0){
+                    return "Queue is full";
+                }
+                else{
+                    return `You can't add that many songs, only ${slotsLeft} slots left in queue`;
+                }
+            }
+            else if(userSongCount + songs.length > guildConfig["maxUserSongs"] && guildConfig["maxUserSongs"] != -1 && ignoreMaxUserSongs == false){
+                const slotsLeft = guildConfig["maxUserSongs"] - queueConstruct.songs.length;
+                if(slotsLeft == 0){
+                    return "Queue is full";
+                }
+                else{
+                    return `You can't add that many songs, only ${slotsLeft} slots left in user queue`;
+                }
+            }
+            else{
+                for (let i = 0; i < scURLs.length; i++) {
+                    const songConstruct = {
+                        title: scURLs[i].title,
+                        url: scURLs[i].permalink_url,
+                        skipCount: 0,
+                        user: userID,
+                        platform: "soundcloud"
+                    };
+    
+                    queueConstruct.songs.push(songConstruct); 
+                }
+            }            
+        }
+        else{
+            const songConstruct = {
+                title: scURLs[0].title,
+                url: scURLs[0].permalink_url,
+                skipCount: 0,
+                user: userID,
+                platform: "soundcloud"
+            };
+
+            queueConstruct.songs.push(songConstruct); 
         }
 
         queue.set(guildID, queueConstruct);
@@ -519,5 +654,6 @@ module.exports = {
     getLastSongPlayed,
     setLastSongPlayed,
     addSpotifySongs,
-    destroyQueue
+    destroyQueue,
+    addSoundCloudSongs
 }
