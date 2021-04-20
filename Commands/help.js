@@ -3,8 +3,8 @@ const fs = require("fs");
 const Discord = require("discord.js");
 
 /**
- * 
- * @param {Discord.Message} message 
+ * Prints the command information message
+ * @param {Discord.Message} message that was sent by the user
  * @returns 
  */
 function help(message) {

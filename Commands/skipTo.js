@@ -1,5 +1,6 @@
 const queue = require("../queue.js");
 const Discord = require("discord.js");
+const botConfig = require("../config.json")
 
 /**
  * 
@@ -17,7 +18,8 @@ async function skipTo(message) {
       return;
     }
 
-    if(/!skipTo [0-9]+/.test(message.content.trim()) == false){
+    const re1 = new RegExp(`/^${botConfig.prefix}skipTo [0-9]+/`)
+    if(re1.test(message.content.trim()) == false){
         message.channel.send("The command must be written in this format:\n**!skipTo [integer]**");
         return;
     }

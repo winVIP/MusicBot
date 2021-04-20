@@ -1,17 +1,20 @@
 const ytdl = require("ytdl-core");
 const queue = require("./../queue.js");
 const Discord = require("discord.js");
+const botConfig = require("../config.json")
 
 /**
  * 
  * @param {Discord.Message} message 
  * @returns 
  */
-async function queueList(message) {  
-  if(/^!queue$/.test(message.content.trim()) == true){
+async function queueList(message) {
+  const re1 = new RegExp(`/^${botConfig.prefix}queue$/`)
+  const re2 = new RegExp(`/^${botConfig.prefix}queue shuffle$/`)
+  if(re1.test(message.content.trim()) == true){
     getQueueList(message);
   }
-  else if(/^!queue shuffle$/.test(message.content.trim()) == true){
+  else if(re2.test(message.content.trim()) == true){
     shuffleQueue(message)
   }
 }

@@ -3,41 +3,50 @@ const queue = require("../queue")
 const playlists = require("../playlists");
 const playCommand = require("./play.js");
 const ytdl = require("ytdl-core");
+const botConfig = require("../config.json")
 
 /**
  * 
  * @param {Discord.Message} message 
  */
 async function Playlist(message, ignoreMaxUserSongs){
-    if(/^!playlist play [A-Za-z]+$/.test(message.content.trim()) == true){
+    const re1 = new RegExp(`/^${botConfig.prefix}playlist play [A-Za-z]+$/`)
+    const re2 = new RegExp(`/^${botConfig.prefix}playlist play [A-Za-z]+ [0-9]+$/`)
+    const re3 = new RegExp(`/^${botConfig.prefix}playlist create [A-Za-z]+$/`)
+    const re4 = new RegExp(`/^${botConfig.prefix}playlist add [A-Za-z]+/`)
+    const re5 = new RegExp(`/^${botConfig.prefix}playlist delete [A-Za-z]+$/`)
+    const re6 = new RegExp(`/^${botConfig.prefix}playlist remove [A-Za-z]+ [0-9]+$/`)
+    const re7 = new RegExp(`/^${botConfig.prefix}playlist all$/`)
+    const re8 = new RegExp(`/^${botConfig.prefix}playlist [A-Za-z]+$/`)
+    if(re1.test(message.content.trim()) == true){
         play(message, ignoreMaxUserSongs);
         return;
     }
-    else if(/^!playlist play [A-Za-z]+ [0-9]+$/.test(message.content.trim()) == true){
+    else if(re2.test(message.content.trim()) == true){
         playOne(message, ignoreMaxUserSongs);
         return;
     }
-    else if(/^!playlist create [A-Za-z]+$/.test(message.content.trim()) == true){
+    else if(re3.test(message.content.trim()) == true){
         create(message);
         return;
     }
-    else if(/^!playlist add [A-Za-z]+/.test(message.content.trim()) == true){
+    else if(re4.test(message.content.trim()) == true){
         add(message);
         return;
     }
-    else if(/^!playlist delete [A-Za-z]+$/.test(message.content.trim()) == true){
+    else if(re5.test(message.content.trim()) == true){
         deletePlaylist(message);
         return;
     }
-    else if(/^!playlist remove [A-Za-z]+ [0-9]+$/.test(message.content.trim()) == true){
+    else if(re6.test(message.content.trim()) == true){
         remove(message);
         return;
     }
-    else if(/^!playlist all$/.test(message.content.trim()) == true){
+    else if(re7.test(message.content.trim()) == true){
         getPlaylistNames(message);
         return;
     }
-    else if(/^!playlist [A-Za-z]+$/.test(message.content.trim()) == true){
+    else if(re8.test(message.content.trim()) == true){
         getSongs(message);
         return;
     }

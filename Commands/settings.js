@@ -1,6 +1,7 @@
 const { prefix } = require("../config.json");
 const fs = require("fs");
 const Discord = require("discord.js");
+const botConfig = require("../config.json")
 
 /**
  * 
@@ -259,7 +260,8 @@ function autoPlay(message){
  */
 function setRole(message){
   //!settings setRole roleName settingName value
-  if(/!settings setRole "([A-Za-z]+ ?)+" [A-Za-z]+ (true|false)/.test(message.content) == false){
+  const re1 = new RegExp(`/^${botConfig.prefix}settings setRole "([A-Za-z]+ ?)+" [A-Za-z]+ (true|false)/`)
+  if(re1.test(message.content) == false){
     message.channel.send("The command must be written in this format:\n**!settings setRole \"some role\" permission [true/false]**\n" +
     "If it doesn't work check your white spaces and quotation marks");
     return;
@@ -378,7 +380,8 @@ function setRoleConfirmationMessages(roleName, permission, value){
  * @param {Discord.Message} message 
  */
 function roles(message){
-  if(/!settings roles (true|false)/.test(message.content.trim()) == false){
+  const re1 = new RegExp(`/^${botConfig.prefix}settings roles (true|false)/`)
+  if(re1.test(message.content.trim()) == false){
     message.channel.send("The command must be written in this format:\n**!settings roles [true/false]**");
     return;
   }

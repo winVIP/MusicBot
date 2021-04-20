@@ -1,10 +1,10 @@
 # Details
 
-Date : 2021-04-10 13:34:47
+Date : 2021-04-17 13:21:04
 
 Directory c:\Users\vyten\Desktop\Bakalaurinis\MusicBot
 
-Total : 24 files,  6117 codes, 222 comments, 262 blanks, all 6601 lines
+Total : 33 files,  6855 codes, 299 comments, 352 blanks, all 7506 lines
 
 [summary](results.md)
 
@@ -12,21 +12,30 @@ Total : 24 files,  6117 codes, 222 comments, 262 blanks, all 6601 lines
 | filename | language | code | comment | blank | total |
 | :--- | :--- | ---: | ---: | ---: | ---: |
 | [Commands/clear.js](/Commands/clear.js) | JavaScript | 15 | 5 | 4 | 24 |
-| [Commands/execute.js](/Commands/execute.js) | JavaScript | 265 | 20 | 43 | 328 |
+| [Commands/execute.js](/Commands/execute.js) | JavaScript | 265 | 20 | 45 | 330 |
 | [Commands/forceSkip.js](/Commands/forceSkip.js) | JavaScript | 17 | 5 | 4 | 26 |
 | [Commands/help.js](/Commands/help.js) | JavaScript | 12 | 5 | 2 | 19 |
-| [Commands/play.js](/Commands/play.js) | JavaScript | 67 | 5 | 12 | 84 |
+| [Commands/history.js](/Commands/history.js) | JavaScript | 341 | 36 | 51 | 428 |
+| [Commands/pause.js](/Commands/pause.js) | JavaScript | 26 | 5 | 4 | 35 |
+| [Commands/play.js](/Commands/play.js) | JavaScript | 77 | 5 | 11 | 93 |
 | [Commands/playlist.js](/Commands/playlist.js) | JavaScript | 151 | 43 | 16 | 210 |
 | [Commands/queueList.js](/Commands/queueList.js) | JavaScript | 38 | 15 | 9 | 62 |
+| [Commands/resume.js](/Commands/resume.js) | JavaScript | 26 | 5 | 4 | 35 |
 | [Commands/search.js](/Commands/search.js) | JavaScript | 97 | 15 | 16 | 128 |
 | [Commands/settings.js](/Commands/settings.js) | JavaScript | 364 | 49 | 33 | 446 |
 | [Commands/skip.js](/Commands/skip.js) | JavaScript | 37 | 5 | 6 | 48 |
 | [Commands/skipTo.js](/Commands/skipTo.js) | JavaScript | 25 | 5 | 7 | 37 |
+| [Commands/soundCloud.js](/Commands/soundCloud.js) | JavaScript | 97 | 15 | 16 | 128 |
 | [Commands/stop.js](/Commands/stop.js) | JavaScript | 14 | 5 | 2 | 21 |
 | [ServerSettings/803958160502030367.json](/ServerSettings/803958160502030367.json) | JSON | 23 | 0 | 0 | 23 |
+| [ServerSettings/82100938617139200.json](/ServerSettings/82100938617139200.json) | JSON | 11 | 0 | 0 | 11 |
 | [ServerSettings/defaultSettings.json](/ServerSettings/defaultSettings.json) | JSON | 11 | 0 | 0 | 11 |
 | [ServerSettings/exampleSettings.json](/ServerSettings/exampleSettings.json) | JSON | 21 | 0 | 0 | 21 |
-| [index.js](/index.js) | JavaScript | 244 | 2 | 17 | 263 |
+| [dispatcherControls.js](/dispatcherControls.js) | JavaScript | 28 | 0 | 4 | 32 |
+| [history.js](/history.js) | JavaScript | 86 | 17 | 15 | 118 |
+| [historyFiles/803958160502030367.json](/historyFiles/803958160502030367.json) | JSON | 11 | 0 | 0 | 11 |
+| [historyFiles/82100938617139200.json](/historyFiles/82100938617139200.json) | JSON | 19 | 0 | 0 | 19 |
+| [index.js](/index.js) | JavaScript | 327 | 1 | 12 | 340 |
 | [package-lock.json](/package-lock.json) | JSON | 3,715 | 0 | 1 | 3,716 |
 | [package.json](/package.json) | JSON | 25 | 0 | 1 | 26 |
 | [playlists.js](/playlists.js) | JavaScript | 162 | 0 | 8 | 170 |

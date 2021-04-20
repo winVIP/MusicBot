@@ -8,26 +8,32 @@ const historyList = require("../history")
 const spotifyAPI = require("../spotifyAPI");
 const { play } = require("./play.js");
 const queue = require("../queue")
+const botConfig = require("../config.json")
 
 /**
- * 
- * @param {Discord.Message} message 
- * @param {*} ignoreMaxUserSongs 
+ * Redirects to specific history commands
+ * @param {Discord.Message} message that was sent by the user
+ * @param {Boolean} ignoreMaxUserSongs if this user can ignore the set max user songs
+ * @returns 
  */
 async function history(message, ignoreMaxUserSongs){
-    if(/^!history list$/.test(message.content.trim())){
+    const re1 = new RegExp(`/^${botConfig.prefix}history list$/`)
+    const re2 = new RegExp(`/^${botConfig.prefix}history [0-9]+$/`)
+    const re3 = new RegExp(`/^${botConfig.prefix}history play [0-9]+$/`)
+    const re4 = new RegExp(`/^${botConfig.prefix}history clear$/`)
+    if(re1.test(message.content.trim())){
         getList(message)
         return
     }
-    else if(/^!history [0-9]+$/.test(message.content.trim())){
+    else if(re2.test(message.content.trim())){
         getDetails(message)
         return
     }
-    else if(/^!history play [0-9]+$/.test(message.content.trim())){
+    else if(re3.test(message.content.trim())){
         playSelection(message, ignoreMaxUserSongs)
         return
     }
-    else if(/^!history clear$/.test(message.content.trim())){
+    else if(re4.test(message.content.trim())){
         clear(message)
         return
     }
@@ -35,7 +41,7 @@ async function history(message, ignoreMaxUserSongs){
 
 /**
  * 
- * @param {Discord.Message} message
+ * @param {Discord.Message} message that was sent by the user
  */
 async function getList(message){
     const itemsInPage = 5;
@@ -45,7 +51,9 @@ async function getList(message){
         return
     }
 
-    if(/^!history list$/.test(message.content.trim())){
+    const re1 = new RegExp(`/^${botConfig.prefix}history list$/`)
+    const re2 = new RegExp(`/^${botConfig.prefix}history list [0-9]+$/`)
+    if(re1.test(message.content.trim())){
         let returnMessage = "History:"
         let resultLength = itemsInPage;
         if(resultLength > result.length){
@@ -59,7 +67,7 @@ async function getList(message){
         message.channel.send(returnMessage);
         return;
     }
-    else if(/^!history list [0-9]+$/.test(message.content.trim())){
+    else if(re2.test(message.content.trim())){
         const page = message.content.trim().slice(14).trim();
         if(Number.isNaN(Number(page)) || Number.isInteger(Number(page)) == false){
             message.channel.send("The page number must be an integer")
@@ -90,13 +98,12 @@ async function getList(message){
         returnMessage = returnMessage + "\n" + "Page " + pageNumber + " of " + numberOfPages
         message.channel.send(returnMessage);
         return;
-    }
-    
+    }    
 }
 
 /**
  * 
- * @param {Discord.Message} message
+ * @param {Discord.Message} message that was sent by the user
  */
 async function getDetails(message){
     const index = message.content.trim().slice(9).trim();
@@ -154,7 +161,7 @@ async function getDetails(message){
 
 /**
  * 
- * @param {Discord.Message} message
+ * @param {Discord.Message} message that was sent by the user
  */
 async function clear(message){
     const result = await historyList.clear(message)
@@ -168,7 +175,7 @@ async function clear(message){
 
 /**
  * 
- * @param {Discord.Message} message
+ * @param {Discord.Message} message that was sent by the user
  */
 async function playSelection(message, ignoreMaxUserSongs){
     const index = message.content.trim().slice(14).trim();
@@ -216,18 +223,21 @@ async function playSelection(message, ignoreMaxUserSongs){
 }
 
 /**
- * 
- * @param {Discord.Message} message 
+ * Execution function for SoundCloud
+ * @param {Discord.Message} message that was sent by the user
+ * @param {Boolean} ignoreMaxUserSongs if this user can ignore the set max user songs
  * @returns 
  */
 async function isSoundCloudURL(message, ignoreMaxUserSongs, songURL){  
     const voiceChannel = message.member.voice.channel;
+    //Checks if the user is in a voice channel
     if (!voiceChannel){
         message.channel.send("You need to be in a voice channel to play music!");
         return;
     }
 
     const permissions = voiceChannel.permissionsFor(message.client.user);
+    //Checks if the bot has the permissions to connect to the voice channel and play audio in it
     if (!permissions.has("CONNECT") || !permissions.has("SPEAK")) {
         message.channel.send("I need the permissions to join and speak in your voice channel!");
         return;
@@ -237,6 +247,7 @@ async function isSoundCloudURL(message, ignoreMaxUserSongs, songURL){
     const info = await scdl.getInfo(songURL);
     scURLs.push(info);
 
+    //Checks if the queue is not initialized, if not it initializes and adds the song to the queue, otherwise just add the song to queue
     if (await queue.isEmpty(message.guild.id) == true) {
         const addResult = await queue.addSoundCloudSongs(message.channel, voiceChannel, scURLs, message.guild.id, message.member.id, ignoreMaxUserSongs);
         if(typeof addResult == "string"){
@@ -286,8 +297,9 @@ async function isSoundCloudURL(message, ignoreMaxUserSongs, songURL){
 }
   
 /**
- * 
- * @param {Discord.Message} message 
+ * Execution function for Spotify
+ * @param {Discord.Message} message that was sent by the user
+ * @param {Boolean} ignoreMaxUserSongs if this user can ignore the set max user songs
  * @returns 
  */
 async function isSpotifyUrl(message, ignoreMaxUserSongs, songURL){  
@@ -358,8 +370,9 @@ else {
 }
   
 /**
- * 
- * @param {Discord.Message} message 
+ * Execution function for Youtube
+ * @param {Discord.Message} message that was sent by the user
+ * @param {Boolean} ignoreMaxUserSongs if this user can ignore the set max user songs
  * @returns 
  */
 async function isUrl(message, ignoreMaxUserSongs, songURL) {  
