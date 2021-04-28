@@ -10,7 +10,9 @@ const botConfig = require("../config.json")
 function settingsHelpMessage(message){
   const settingsMessageBuffer = fs.readFileSync(fs.realpathSync("./messageText/settingsCommand.txt"));
   let settingsMessageString = settingsMessageBuffer.toString();
-  settingsMessageString = settingsMessageString.replaceAll("{prefix}", prefix)
+  while(settingsMessageString.search("{prefix}") > 0){
+    settingsMessageString = settingsMessageString.replace("{prefix}", prefix)
+  }
   message.channel.send(settingsMessageString);
 }
 
@@ -196,7 +198,7 @@ function autoPlay(message){
  * 
  * @param {Discord.Message} message 
  */
- function removeUserCommands(message){
+function removeUserCommands(message){
   const removeUserCommands = message.content.trim().split(" ")[2]
 
   if(removeUserCommands == "true"){
@@ -227,7 +229,7 @@ function autoPlay(message){
  * 
  * @param {Discord.Message} message 
  */
- function removeBotMessages(message){
+function removeBotMessages(message){
   const removeBotMessages = message.content.trim().split(" ")[2]
 
   if(removeBotMessages == "true"){
@@ -411,7 +413,7 @@ function roles(message){
  * @param {Discord.Message} message 
  * @returns 
  */
-function settings(message) {
+function settings(message){
   if(message.content.trim() == `${prefix}settings`){
     settingsHelpMessage(message);
   }

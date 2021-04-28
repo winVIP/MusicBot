@@ -55,9 +55,10 @@ client.on("message", async message => {
   let serverSettings;
   const fullPath = path.resolve("./ServerSettings")
   if(fs.existsSync(fullPath + "\\" + message.guild.id + ".json") == true){
-    serverSettings = require(fullPath + "\\" + message.guild.id + ".json");
+    serverSettings = JSON.parse(fs.readFileSync(fullPath + "\\" + message.guild.id + ".json"));
   }
   if(message.author.bot){
+    console.timeEnd("command execution")
     if(serverSettings.autoRemoveBotMessages == true){
       message.delete({timeout:2000});
       return;
@@ -66,8 +67,11 @@ client.on("message", async message => {
       return;
     }
   } 
-  if(!message.content.startsWith(prefix)) return;
+  if(!message.content.startsWith(prefix)){
+    return
+  } 
   if(message.content.startsWith(prefix)){
+    console.time("command execution")
     if(serverSettings.autoRemoveUserCommands == true){
       message.delete({timeout:2000})
     }
@@ -103,6 +107,7 @@ client.on("message", async message => {
     }
   }
   else if(message.content.startsWith(`${prefix}history`)){
+    console.log("kakakak")
     const serverConfig = require("./ServerSettings/" + message.guild.id + ".json");
     if(serverConfig.noRoles == true){
       history(message);

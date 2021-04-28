@@ -45,7 +45,7 @@ async function play(message, ignoreMaxUserSongs) {
         }
     }
     try{
-        await historyList.add(message, songToPlay.url)
+        await historyList.add(message, songToPlay)
     }
     catch(e){
         console.log(e)

@@ -9,8 +9,8 @@ const botConfig = require("../config.json")
  * @returns 
  */
 async function queueList(message) {
-  const re1 = new RegExp(`/^${botConfig.prefix}queue$/`)
-  const re2 = new RegExp(`/^${botConfig.prefix}queue shuffle$/`)
+  const re1 = new RegExp(`^${botConfig.prefix}queue$`)
+  const re2 = new RegExp(`^${botConfig.prefix}queue shuffle$`)
   if(re1.test(message.content.trim()) == true){
     getQueueList(message);
   }

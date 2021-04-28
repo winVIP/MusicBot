@@ -1,10 +1,16 @@
-**{prefix}settings** createRole [role name]
-**{prefix}settings** setRole [role name] [user name]
-**{prefix}settings** roles [true/false]
-**{prefix}settings** setMaxQueueSize [Integer]
-**{prefix}settings** setMaxUserQueueSize [Integer]
-**{prefix}settings** setCommandChannel [Text channel name]
-**{prefix}settings** usersNeededToSkip [% of users in voice channel]
-**{prefix}settings** autoPlay [true/false]
-**{prefix}settings** removeUserCommands [true/false]
-**{prefix}settings** removeBotMessages [true/false]
+**{prefix}settings setRole [roleName] [permissionName] [value]** - sets the permission for the specified role
+**{prefix}settings roles [true/false]** - Activates or disables roles in the server
+**{prefix}settings setMaxQueueSize [Integer]** - Sets the maximum tracks that can be added to the queue
+**{prefix}settings setMaxUserQueueSize [Integer]** - Sets the maximum tracks that can be added to the queue by one user
+**{prefix}settings setCommandChannel [TextChannelName]** - Sets the channel in which bot commands must be written to
+**{prefix}settings usersNeededToSkip [% of users in voice channel]** - Sets how many users must vote to skip the current track
+**{prefix}settings autoPlay [true/false]** - Sets whether the bot should add tracks to the queue automatically if queue is empty
+**{prefix}settings removeUserCommands [true/false]** - Sets if the bot should remove user commands automatically
+**{prefix}settings removeBotMessages [true/false]** - Sets if the bot should remove bot responses automatically
+Available role permission:
+**forceSkip** - permission to skip a track even if vote skip is enabled
+**clearQueue** - permission to clear the queue
+**ignoreMaxUserSongs** - permission to add more tracks then the set maximum
+**skipTo** - permission to skip to any track in the queue
+**stop** - permission to disconnect the bot
+**addPlaylist** - permission to manipulate playlists

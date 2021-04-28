@@ -17,10 +17,10 @@ const botConfig = require("../config.json")
  * @returns 
  */
 async function history(message, ignoreMaxUserSongs){
-    const re1 = new RegExp(`/^${botConfig.prefix}history list$/`)
-    const re2 = new RegExp(`/^${botConfig.prefix}history [0-9]+$/`)
-    const re3 = new RegExp(`/^${botConfig.prefix}history play [0-9]+$/`)
-    const re4 = new RegExp(`/^${botConfig.prefix}history clear$/`)
+    const re1 = new RegExp(`^${botConfig.prefix}history list$`)
+    const re2 = new RegExp(`^${botConfig.prefix}history [0-9]+$`)
+    const re3 = new RegExp(`^${botConfig.prefix}history play [0-9]+$`)
+    const re4 = new RegExp(`^${botConfig.prefix}history clear$`)
     if(re1.test(message.content.trim())){
         getList(message)
         return
@@ -51,8 +51,8 @@ async function getList(message){
         return
     }
 
-    const re1 = new RegExp(`/^${botConfig.prefix}history list$/`)
-    const re2 = new RegExp(`/^${botConfig.prefix}history list [0-9]+$/`)
+    const re1 = new RegExp(`^${botConfig.prefix}history list$`)
+    const re2 = new RegExp(`^${botConfig.prefix}history list [0-9]+$`)
     if(re1.test(message.content.trim())){
         let returnMessage = "History:"
         let resultLength = itemsInPage;
@@ -396,16 +396,16 @@ if (await queue.isEmpty(message.guild.id) == true) {
     }
 
     try {
-    var connection = await voiceChannel.join();
-    const connectionResult = await queue.addConnection(message.guild.id, connection);
-    play(message, ignoreMaxUserSongs);
-    return;
+        var connection = await voiceChannel.join();
+        const connectionResult = await queue.addConnection(message.guild.id, connection);
+        play(message, ignoreMaxUserSongs);
+        return;
     } 
     catch (err) {
-    console.log(err);
-    await queue.clearQueue(message.guild.id);
-    message.channel.send(err);
-    return;
+        console.log(err);
+        await queue.clearQueue(message.guild.id);
+        message.channel.send(err);
+        return;
     }
 }
 else {

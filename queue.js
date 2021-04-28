@@ -14,7 +14,6 @@ async function addSong(textChannel, voiceChannel, song, guildID, userID, ignoreM
         ytplResult = ytplResult.items;
     }
 
-
     if(queue.has(guildID) == false){
         const queueConstruct = {
             textChannel: textChannel,

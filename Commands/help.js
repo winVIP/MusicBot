@@ -10,7 +10,9 @@ const Discord = require("discord.js");
 function help(message) {
   let helpMessageBuffer = fs.readFileSync(fs.realpathSync("./messageText/helpCommand.txt"));
   let helpMessageString = helpMessageBuffer.toString();
-  helpMessageString = helpMessageString.replaceAll("{prefix}", prefix)
+  while(helpMessageString.search("{prefix}") > 0){
+    helpMessageString = helpMessageString.replace("{prefix}", prefix)
+  }  
   message.channel.send(helpMessageString);
 }
 

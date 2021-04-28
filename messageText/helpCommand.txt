@@ -1,7 +1,27 @@
-**{prefix}play** [Song query/Song link/Playlist link] - Plays the song(s) from the given name or url
-**{prefix}skip** - Skips the song that is playing or if vote skip is enables, votes to skip
+**{prefix}play** [track query/track link/Playlist link]** - Plays the track(s) from the given query or url
+**{prefix}skip - Skips the track that is playing or if vote skip is enables, votes to skip
+**{prefix}skipTo [Index]** - Skips to the track by the specified index
 **{prefix}stop** - Stops what is playing and disconnects the bot
-**{prefix}queue** - Shows the queue
+**{prefix}queue** - Prints a list of the tracks that are in the queue
+**{prefix}queue shuffle** - Shuffles the track queue
 **{prefix}clear** - Clears the queue
+**{prefix}pause** - Pause the playback
+**{prefix}resume** - Resumes the playback
+**{prefix}fs** - Skips the track that is playing, even if vote skip is enabled(need permissions)
+**{prefix}search [query]** - Searches for the query in the Youtube platform
+**{prefix}search [index]** - Selects a track by the specified index to be played
+**{prefix}soundcloud [query]** - Searches for the query in the soundcloud platform
+**{prefix}soundcloud [index]** - Selects a track by the specified index to be played
+**{prefix}history list** - Prints a list of the tracks that have been played
+**{prefix}history [Index]** - Gets the details of the selected track by the given index
+**{prefix}history play [Index]** - Plays the selected track
+**{prefix}history clear** - Clears the track history
+**{prefix}playlist all** - Prints a list of all the playlists in the server
+**{prefix}playlist [playlistName]** - Prints a list of all tracks in the playlist
+**{prefix}playlist create [playlistName]** - Creates a playlist with the specified name
+**{prefix}playlist add [playlistName] [track link]** - Add a track to the specified playlist
+**{prefix}playlist delete [playlistName]** - Deletes a playlist with the specified name
+**{prefix}playlist remove [playlistName] [Index]** - Removes a track from the specified playlist
+**{prefix}playlist play [playlistName]** - Plays the specified playlist
+**{prefix}playlist play [playlistName] [Index]** - Plays a track from the specified playlist
 **{prefix}settings** - Opens the settings help menu
-**{prefix}fs** - Skips the song that is playing, even if vote skip is enabled

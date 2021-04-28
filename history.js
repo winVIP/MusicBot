@@ -101,7 +101,7 @@ async function getSongForAutoplay(message){
     }
 
     for (let i = history.length - 1; i >= 0; i--) {
-        const ytdlResult = ytdl.validateURL(history[i]);
+        const ytdlResult = ytdl.validateURL(history[i].url);
         if(ytdlResult == true){
             return history[i]
         }
